@@ -1,0 +1,28 @@
+.wrapper {
+  font-family: inherit;
+  width: 100%;
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  .about-section {
+    .qna {
+      .box {
+        border: 1px solid black;
+        padding: 8px;
+        margin-bottom: 5px;
+      }
+      margin-bottom: 30px;
+      .answer-text {
+        color: #e4af00;
+        &#author-names {
+          font-family: monospace;
+          #author-name {
+            color: gold;
+          }
+        }
+      }
+    }
+  }
+}
