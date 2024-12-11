@@ -1,42 +1,36 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
+import CredentialsForm from "../components/CredentialsForm";
 
-const LogIn = ({ onLogin }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const hanldeSubmit = (e) => {
-    e.preventDefault();
-    if (username == "admit" && password == "admin") {
-      onLogin(true);
-    } else {
-      alert("Invalid credentials.");
+const LogIn = () => {
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleForm = (username, password) => {
+    const API_URL = import.meta.env.VITE_API_URL;
+    try {
+      fetch(`${API_URL}/validate_usr`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: username, password: password }),
+      }).then((response) => {
+        if (response.status != 200 && response.status != 201) {
+          response.json().then((msg) => {
+            alert(msg.message);
+          });
+        } else {
+          login({ username: username, password: password });
+          navigate("/");
+        }
+      });
+    } catch (error) {
+      console.error("Error: ", error);
+      alert(`Error: ${error.message}`);
     }
   };
-  return (
-    <form onSubmit={hanldeSubmit}>
-      <div>
-        <label htmlFor="input#username">Username:</label>
-        <input
-          type="text"
-          id="userame"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="input#password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">LogIn</button>
-    </form>
-  );
+  return <CredentialsForm submitMsg="Log In" callback={handleForm} />;
 };
 
 export default LogIn;

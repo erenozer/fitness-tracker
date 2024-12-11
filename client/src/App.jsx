@@ -1,22 +1,34 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
-import Navbar from "./Navbar.jsx";
+import { AuthContext } from "./AuthContext";
 
-import Home from "./pages/Home.jsx";
-import LogIn from "./pages/LogIn.jsx";
-import SignUp from "./pages/SignUp.jsx";
-import About from "./pages/About.jsx";
+import Navbar from "./Navbar";
+import About from "./pages/About";
+import Excercises from "./pages/Exercises";
+import Home from "./pages/Home";
+import LogIn from "./pages/LogIn";
+import LogOut from "./pages/LogOut";
+import SignUp from "./pages/SignUp";
 
 const App = () => {
+  const { isLoggedIn } = useContext(AuthContext);
   return (
     <React.Fragment>
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/login" element={<LogIn />} />
-        <Route path="/signup" element={<SignUp />} />
+        {!isLoggedIn ? (
+          <React.Fragment>
+            <Route path="/login" element={<LogIn />} />
+            <Route path="/signup" element={<SignUp />} />
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <Route path="/exercises" element={<Excercises />} />
+            <Route path="/logout" element={<LogOut />} />
+          </React.Fragment>
+        )}
       </Routes>
     </React.Fragment>
   );

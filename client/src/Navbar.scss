@@ -6,8 +6,9 @@ nav {
   color: black;
   // box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   padding: 9px 13px;
-  margin-top: 7px;
+  margin-top: 9px;
   margin-bottom: 20px;
+  margin-left: 12px;
   ul {
     display: flex;
     justify-content: space-between;
@@ -18,7 +19,8 @@ nav {
     li {
       a {
         color: inherit;
-        padding: 5px 10px;
+        font-weight: 200;
+        padding: 10px;
         text-decoration: none;
         transition: background-color 0.3s;
         &.regular {
@@ -41,9 +43,18 @@ a[href="/login"] {
   color: #ffcc00;
   border-radius: none;
   background-color: white;
-  font-weight: 200;
+
   &:hover {
     background-color: #fafafa;
+  }
+}
+
+a[href="/logout"] {
+  color: black;
+  border-radius: none;
+  background-color: white;
+  &:hover {
+    color: gold;
   }
 }
 

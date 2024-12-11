@@ -11,7 +11,7 @@ const About = () => {
           </div>
           <div className="box">
             <h5 className="answer-text" id="author-names">
-              We are <span id="author-name">Abdül Ahundzade</span>, <span id="author-name">Ahmet Berkay Yıldız</span>, and <span id="author-name">Eren</span>. <br/> Three ambitious engineers from İstanbul Teknik Üniversitesi, <br/>ready to take on the database world.
+              We are <span id="author-name">Abdül Ahundzade</span>, <span id="author-name">Ahmet Berkay Yıldız</span>, and <span id="author-name">Eren</span>, <br/> three ambitious engineers from ITU, ready to take on the database world.
             </h5>
           </div>
         </div>
