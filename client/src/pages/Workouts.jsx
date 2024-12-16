@@ -4,17 +4,7 @@ const Workouts = () => {
   const [exercisesLst, setExercisesLst] = useState([]); // List of exercises
   const [workoutDetails, setWorkoutDetails] = useState([]); // Selected exercises with details
   const [showAddWorkoutForm, setShowAddWorkoutForm] = useState(false);
-  const [selectedDay, setSelectedDay] = useState("Monday"); // Default to Monday
 
-  const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
 
   // Fetch exercises list from the API
   useEffect(() => {
@@ -56,7 +46,6 @@ const Workouts = () => {
 
   const handleAddWorkoutForm = (event) => {
     event.preventDefault();
-    console.log("Workout for:", selectedDay);
     console.log("Workout Details:", workoutDetails);
 
     // Send data to the backend
@@ -65,7 +54,6 @@ const Workouts = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        day: selectedDay,
         exercises: workoutDetails,
       }),
     })
@@ -89,21 +77,7 @@ const Workouts = () => {
 
       {showAddWorkoutForm && (
         <form onSubmit={handleAddWorkoutForm}>
-          {/* Day selection */}
-          <label>
-            Select Day:
-            <select
-              value={selectedDay}
-              onChange={(e) => setSelectedDay(e.target.value)}
-            >
-              {daysOfWeek.map((day) => (
-                <option key={day} value={day}>
-                  {day}
-                </option>
-              ))}
-            </select>
-          </label>
-
+          
           {/* Workout details input */}
           {workoutDetails.map((detail, index) => (
             <div key={index} className="exercise-row">

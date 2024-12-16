@@ -3,6 +3,7 @@ from flask_cors import CORS
 import database
 from Users import Users
 from Exercises import Exercises
+from Workouts import Workouts
 
 app = Flask(__name__)
 CORS(app)
@@ -54,7 +55,6 @@ def get_exercises_lst():
 
 
 @app.route("/add_workout", methods=["POST"])
-@app.route("/add_workout", methods=["POST"])
 def add_workout():
     try:
         data = request.json
@@ -64,7 +64,7 @@ def add_workout():
         if not day or not exercises:
             return jsonify({"message": "Day and exercises are required"}), 400
 
-        # Add the workout for the specific day
+        # Add workout for the specified day
         workout_id = Workouts.add_workout_for_day(day)
 
         # Add exercises with repetitions and weights to the workout

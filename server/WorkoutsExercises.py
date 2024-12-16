@@ -4,22 +4,23 @@ import database
 
 class Workouts:
     db = None
-    tbl = "workouts"
+    tbl = "workouts_exercises"
 
     @classmethod
     def connect_to_db(cls):
         cls.db = database.get_db()
 
+
     @classmethod
-    def add_workout(cls, user_id: int) -> int:
+    def add_exercise_to_workout(cls, workout_id: int, exercise_id: int) -> int:
         try:
-            return cls.db.add_to_table (
+            return cls.db.add_to_table(
                 table=cls.tbl,
-                columns=("user_id"),
-                args=(user_id),
+                columns=("workout_id", "exercise_id"),
+                args=(workout_id, exercise_id),
             )
         except sqlite3.Error as e:
-            print(f"Error adding workout for user {user_id}: {e}")
+            print(f"Error linking exercise {exercise_id} to workout {workout_id}: {e}")
             return -1
         
     @classmethod
@@ -27,9 +28,8 @@ class Workouts:
         return cls.db.retrieve_all(
             cls.tbl,
             columns=(
-                "id",
-                "user_id",
-                "date_created",
+                "workout_id",
+                "exercise_id",
             ),
             turn_to_dict=True,
         )
