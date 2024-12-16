@@ -20,8 +20,8 @@ const Navbar = ({ isLoggedIn }) => {
           </li>
           {isLoggedIn && (
             <li>
-              <Link className="regular" to="/exercises">
-                Exercises
+              <Link className="regular" to="/workouts">
+                Workouts
               </Link>
             </li>
           )}

@@ -31,7 +31,7 @@ class __DataBase:
     def add_to_table(
         self,
         table: str,
-        params: List[str],
+        columns: List[str],
         args: List,
         singlethread=SQLITE3_SINGLETHREAD,
     ):
@@ -40,7 +40,7 @@ class __DataBase:
                 self.end_conn()
             self.start_conn()
         try:
-            sql = f"INSERT INTO {table} {params} VALUES ({', '.join('?' * len(args))})"
+            sql = f"INSERT INTO {table} {columns} VALUES ({', '.join('?' * len(args))})"
             print(f"[SQL] {sql}")
             self.cursor.execute(sql, args)
             self.conn.commit()
@@ -52,19 +52,56 @@ class __DataBase:
             print(e)
 
     def filter(
-        self, table: str, params: List, filters: Dict, singlethread=SQLITE3_SINGLETHREAD
+        self,
+        table: str,
+        columns: List,
+        filters: Dict,
+        singlethread=SQLITE3_SINGLETHREAD,
     ) -> List:
         if singlethread:
             if self.conn_established:
                 self.end_conn()
             self.start_conn()
         try:
-            sql = f"SELECT {', '.join(params)} from {table} "
+            sql = f"SELECT {', '.join(columns)} from {table} "
             for k, v in filters.items():
                 sql += f"WHERE {k} = '{v}'"
             print(f"[SQL] {sql}")
             cursor = self.cursor.execute(sql)
             data = cursor.fetchall()
+            print(f"[SQL] {data}")
+            if singlethread:
+                self.end_conn()
+            return data
+        except sqlite3.Error as e:
+            print(e)
+            return []
+
+    def retrieve_all(
+        self,
+        table: str,
+        columns: List,
+        turn_to_dict: bool = True,
+        singlethread=SQLITE3_SINGLETHREAD,
+    ):
+        if singlethread:
+            if self.conn_established:
+                self.end_conn()
+            self.start_conn()
+        try:
+            sql = f"SELECT {', '.join(columns)} from {table}"
+            print(f"[SQL] {sql}")
+            cursor = self.cursor.execute(sql)
+            data = cursor.fetchall()
+            if turn_to_dict:
+                temp = data.copy()
+                data = []
+                for entry in temp:
+                    data.append({})
+                    i = 0
+                    for colname in columns:
+                        data[-1][colname] = entry[i]
+                        i += 1
             print(f"[SQL] {data}")
             if singlethread:
                 self.end_conn()
@@ -83,6 +120,12 @@ __db = None
 def init(path: str):
     global __db
     __db = __DataBase(path)
+
+
+def close():
+    global __db
+    __db.close()
+    del __db
 
 
 def get_db():

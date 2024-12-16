@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import database
 from Users import Users
+from Exercises import Exercises
 
 app = Flask(__name__)
 CORS(app)
@@ -42,7 +43,41 @@ def validate_usr():
         return jsonify({"message": str(e)}), 500
 
 
+@app.route("/get_exercises_lst", methods=["GET"])
+def get_exercises_lst():
+    # No arguments.
+    try:
+        exercises = Exercises.retrieve_data()
+        return jsonify({"exercises": exercises})
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+
+@app.route("/add_workout", methods=["POST"])
+def add_workout():
+    """
+    ! Potentially user_id
+    ["name"]: Username
+    ["workout"]: Array of exercises (id's)
+    """
+    pass
+
+@app.route("/get_workouts", methods=["POST"])
+def get_workouts():
+    # user_id
+    data = request.get_json()
+    usr_id = data.get("user_id")
+    # Workotus.get_workouts(user_id)
+
+
+@app.endpoint
+def close_app():
+    database.close()
+
+
+# ! ----------------------------------------
 if __name__ == "__main__":
     database.init("data.db")
     Users.connect_to_db()
+    Exercises.connect_to_db()
     app.run(port=4040, debug=True)

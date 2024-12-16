@@ -1,0 +1,22 @@
+import database
+
+
+class Exercises:
+    db = None
+    tbl = "exercises"
+
+    @classmethod
+    def connect_to_db(cls):
+        cls.db = database.get_db()
+
+    @classmethod
+    def retrieve_data(cls):
+        return cls.db.retrieve_all(
+            cls.tbl,
+            columns=(
+                "id",
+                "desc",
+                "body_part",
+            ),
+            turn_to_dict=True,
+        )

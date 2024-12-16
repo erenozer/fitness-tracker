@@ -4,7 +4,7 @@ import { AuthContext } from "./AuthContext";
 
 import Navbar from "./Navbar";
 import About from "./pages/About";
-import Excercises from "./pages/Exercises";
+import Workouts from "./pages/Workouts";
 import Home from "./pages/Home";
 import LogIn from "./pages/LogIn";
 import LogOut from "./pages/LogOut";
@@ -25,7 +25,7 @@ const App = () => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Route path="/exercises" element={<Excercises />} />
+            <Route path="/workouts" element={<Workouts />} />
             <Route path="/logout" element={<LogOut />} />
           </React.Fragment>
         )}

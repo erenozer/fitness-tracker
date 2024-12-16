@@ -32,7 +32,7 @@ const CredentialsForm = ({ submitMsg, callback }) => {
             autoComplete="off"
           />
         </div>
-        <button id="submit-btn" type="submit">
+        <button className="submit-btn" type="submit">
           {submitMsg}
         </button>
       </form>

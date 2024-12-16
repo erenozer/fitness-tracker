@@ -19,7 +19,7 @@ nav {
     li {
       a {
         color: inherit;
-        font-weight: 200;
+        font-weight: lighter;
         padding: 10px;
         text-decoration: none;
         transition: background-color 0.3s;
@@ -27,6 +27,9 @@ nav {
           &:hover {
             color: #ffb700;
           }
+        }
+        &:not(.regular) {
+          border-radius: none;
         }
       }
     }
@@ -41,9 +44,7 @@ nav {
 
 a[href="/login"] {
   color: #ffcc00;
-  border-radius: none;
   background-color: white;
-
   &:hover {
     background-color: #fafafa;
   }
@@ -51,7 +52,6 @@ a[href="/login"] {
 
 a[href="/logout"] {
   color: black;
-  border-radius: none;
   background-color: white;
   &:hover {
     color: gold;
@@ -60,14 +60,8 @@ a[href="/logout"] {
 
 a[href="/signup"] {
   color: white;
-  border-radius: none;
   background-color: #ffcc00;
-  font-weight: 200;
   &:hover {
     background-color: #ddaa00;
   }
-}
-
-a[href="/about"] {
-  font-weight: 500;
 }
