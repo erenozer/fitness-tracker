@@ -1,3 +1,4 @@
+-- Users table
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(100) UNIQUE NOT NULL,
@@ -6,27 +7,36 @@ CREATE TABLE users (
     date_created DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Exercises table
 CREATE TABLE exercises (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     desc VARCHAR(100),  -- description
     body_part VARCHAR(20)
 );
 
+-- Workouts table
 CREATE TABLE workouts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     date_created DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+-- Workouts_Exercises table (purely links workouts and exercises)
 CREATE TABLE workouts_exercises (
-    workout_id INTEGER,
-    exercise_id INTEGER,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    workout_id INTEGER NOT NULL,
+    exercise_id INTEGER NOT NULL,
+    FOREIGN KEY (workout_id) REFERENCES workouts(id),
+    FOREIGN KEY (exercise_id) REFERENCES exercises(id)
+);
+
+-- Exercise_Details table (stores repetitions and weights for workouts_exercises)
+CREATE TABLE exercise_details (
+    workout_exercise_id INTEGER PRIMARY KEY,
     repetitions INTEGER,
     used_weight INTEGER,
-    PRIMARY KEY (workout_id, exercise_id),
-    FOREIGN KEY (workout_id) REFERENCES workout(id),
-    FOREIGN KEY (exercise_id) REFERENCES exercises(id)
+    FOREIGN KEY (workout_exercise_id) REFERENCES workouts_exercises(id)
 );
 
 -- Basic compound exercises that target multiple muscle groups
