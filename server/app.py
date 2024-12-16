@@ -4,6 +4,8 @@ import database
 from Users import Users
 from Exercises import Exercises
 from Workouts import Workouts
+from WorkoutsExercises import WorkoutsExercises 
+from ExerciseDetails import ExerciseDetails
 
 app = Flask(__name__)
 CORS(app)
@@ -58,14 +60,16 @@ def get_exercises_lst():
 def add_workout():
     try:
         data = request.json
-        day = data.get("day")
         exercises = data.get("exercises")
+        user_id = data.get("user_id")  # Add user_id from request
 
-        if not day or not exercises:
-            return jsonify({"message": "Day and exercises are required"}), 400
+        if not exercises or not user_id:
+            return jsonify({"message": "User ID and exercises are required"}), 400
 
-        # Add workout for the specified day
-        workout_id = Workouts.add_workout_for_day(day)
+        # Add new workout
+        workout_id = Workouts.add_workout(user_id)
+        if workout_id == -1:
+            return jsonify({"message": "Error creating workout"}), 500
 
         # Add exercises with repetitions and weights to the workout
         for exercise in exercises:
@@ -73,27 +77,25 @@ def add_workout():
             if not exercise_id:
                 return jsonify({"message": f"Exercise {exercise['exercise']} not found"}), 404
 
-            Workouts.add_exercise_to_workout(
+            # Add exercise to workout
+            workout_exercise_id = WorkoutsExercises.add_exercise_to_workout(
                 workout_id=workout_id,
-                exercise_id=exercise_id,
-                repetitions=exercise["repetitions"],
-                weight=exercise["weight"],
+                exercise_id=exercise_id
             )
+
+            # Add exercise details (reps and weight)
+            if workout_exercise_id != -1:
+                ExerciseDetails.add_excercise_detail(
+                    workout_exercise_id=workout_exercise_id,
+                    repetitions=exercise["repetitions"],
+                    weight=exercise["weight"]
+                )
 
         return jsonify({"message": "Workout added successfully"}), 201
     except Exception as e:
         print(f"Error adding workout: {e}")
         return jsonify({"message": "Error adding workout"}), 500
 
-def get_workouts_by_day(day):
-    try:
-        workouts = Workouts.get_workouts_for_day(day)
-        if not workouts:
-            return jsonify({"message": "No workouts found for the specified day"}), 404
-        return jsonify({"workouts": workouts}), 200
-    except Exception as e:
-        print(f"Error fetching workouts: {e}")
-        return jsonify({"message": "Error fetching workouts"}), 500
 
 @app.route("/get_workouts", methods=["POST"])
 def get_workouts():

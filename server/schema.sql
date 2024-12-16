@@ -35,7 +35,7 @@ CREATE TABLE workouts_exercises (
 CREATE TABLE exercise_details (
     workout_exercise_id INTEGER PRIMARY KEY,
     repetitions INTEGER,
-    used_weight INTEGER,
+    weight INTEGER,
     FOREIGN KEY (workout_exercise_id) REFERENCES workouts_exercises(id)
 );
 

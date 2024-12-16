@@ -20,3 +20,13 @@ class Exercises:
             ),
             turn_to_dict=True,
         )
+
+    def get_exercise_id_by_name(cls, name):
+        return cls.db.retrieve_all(
+            cls.tbl,
+            columns=(
+                "id",
+            ),
+            where=("desc", name),
+            turn_to_dict=True,
+        )

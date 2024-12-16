@@ -2,7 +2,7 @@ import sqlite3
 import database
 
 
-class Workouts:
+class ExerciseDetails:
     db = None
     tbl = "exercise_details"
 
@@ -11,15 +11,15 @@ class Workouts:
         cls.db = database.get_db()
 
     @classmethod
-    def add_excercise_detail(cls, workout_id: int, exercise_id: int) -> int:
+    def add_excercise_detail(cls, workout_exercise_id: int, repetitions: int, weight: int) -> int:
         try:
             return cls.db.add_to_table(
                 table=cls.tbl,
-                columns=("workout_id", "exercise_id"),
-                args=(workout_id, exercise_id),
+                columns=("workout_exercise_id", "repetitions", "weight"),
+                args=(workout_exercise_id, repetitions, weight),
             )
         except sqlite3.Error as e:
-            print(f"Error linking exercise {exercise_id} to workout {workout_id}: {e}")
+            print(f"Error linking exercise {workout_exercise_id} to workout {repetitions} to workout {weight}: {e}")
             return -1
         
     @classmethod
@@ -27,8 +27,9 @@ class Workouts:
         return cls.db.retrieve_all(
             cls.tbl,
             columns=(
-                "workout_id",
-                "exercise_id",
+                "workout_exercise_id",
+                "repetitions",
+                "weight",
             ),
             turn_to_dict=True,
         )

@@ -2,7 +2,7 @@ import sqlite3
 import database
 
 
-class Workouts:
+class WorkoutsExercises:
     db = None
     tbl = "workouts_exercises"
 
