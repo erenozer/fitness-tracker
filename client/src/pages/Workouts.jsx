@@ -1,80 +1,158 @@
 import React, { useEffect, useState } from "react";
 
 const Workouts = () => {
-  const [exercisesLst, setExercisesLst] = useState([]);
-  const [selectedExercises, setSelectedExercises] = useState([]);
+  const [exercisesLst, setExercisesLst] = useState([]); // List of exercises
+  const [workoutDetails, setWorkoutDetails] = useState([]); // Selected exercises with details
   const [showAddWorkoutForm, setShowAddWorkoutForm] = useState(false);
-  // ! In case exercises have been locally stored,
-  // ! don't fetch the data from the server.
+  const [selectedDay, setSelectedDay] = useState("Monday"); // Default to Monday
+
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  // Fetch exercises list from the API
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL;
-    fetch(`${API_URL}/get_exercises_lst`, { method: "GET" }).then(
-      (response) => {
-        const status = response.status;
-        response.json().then((json) => {
-          if (status != 200 && status != 201) {
-            alert(json.message);
+    fetch(`${API_URL}/get_exercises_lst`, { method: "GET" }).then((response) => {
+      const status = response.status;
+      response.json().then((json) => {
+        if (status !== 200 && status !== 201) {
+          alert(json.message);
+        } else {
+          if (Array.isArray(json.exercises)) {
+            console.log("Fetched exercises from API:", json.exercises);
+            setExercisesLst(json.exercises); // Set exercises list properly
           } else {
-            if (Array.isArray(json.exercises)) {
-              console.log("Fetched exercises from API:", json.exercises);
-              setExercisesLst(json.exercises);
-              console.log(`exercisesLst: ${exercisesLst}`);
-            } else {
-              console.error("API response is not an array.");
-            }
+            console.error("API response is not an array.");
           }
-        });
-      }
-    );
+        }
+      });
+    });
   }, []);
+
   const toggleAddWorkoutForm = () => {
     setShowAddWorkoutForm(!showAddWorkoutForm);
+    setWorkoutDetails([]); // Reset the form state when toggled
   };
+
+  const handleAddExercise = () => {
+    setWorkoutDetails([
+      ...workoutDetails,
+      { exercise: "", repetitions: "", weight: "" },
+    ]);
+  };
+
+  const handleExerciseDetailChange = (index, field, value) => {
+    const updatedDetails = [...workoutDetails];
+    updatedDetails[index][field] = value;
+    setWorkoutDetails(updatedDetails);
+  };
+
   const handleAddWorkoutForm = (event) => {
     event.preventDefault();
-    console.log("Selected exercises:", selectedExercises);
-    setShowAddWorkoutForm(false);
+    console.log("Workout for:", selectedDay);
+    console.log("Workout Details:", workoutDetails);
+
+    // Send data to the backend
+    const API_URL = import.meta.env.VITE_API_URL;
+    fetch(`${API_URL}/add_workout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        day: selectedDay,
+        exercises: workoutDetails,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert("Workout added successfully!");
+          setShowAddWorkoutForm(false);
+          setWorkoutDetails([]);
+        } else {
+          alert("Failed to add workout.");
+        }
+      })
+      .catch((err) => console.error("Error adding workout:", err));
   };
-  const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
-    if (checked) {
-      setSelectedExercises([...selectedExercises, value]);
-    } else {
-      setSelectedExercises(
-        selectedExercises.filter((exercise) => exercise !== value)
-      );
-    }
-  };
-  // Add workout btn.
+
   return (
     <div className="add-workout_container">
       <button className="submit-btn" onClick={toggleAddWorkoutForm}>
         {showAddWorkoutForm ? "Cancel" : "Add Workout"}
       </button>
+
       {showAddWorkoutForm && (
         <form onSubmit={handleAddWorkoutForm}>
-          <select
-            id="exerciseSelect"
-            value={selectedExercises}
-            onChange={(event) => {
-              const options = event.target.options;
-              const selected = [];
-              for (let i = 0; i < options.length; i++) {
-                if (options[i].selected) {
-                  selected.push(options[i].value);
+          {/* Day selection */}
+          <label>
+            Select Day:
+            <select
+              value={selectedDay}
+              onChange={(e) => setSelectedDay(e.target.value)}
+            >
+              {daysOfWeek.map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {/* Workout details input */}
+          {workoutDetails.map((detail, index) => (
+            <div key={index} className="exercise-row">
+              <select
+                value={detail.exercise}
+                onChange={(e) =>
+                  handleExerciseDetailChange(index, "exercise", e.target.value)
                 }
-              }
-              setSelectedExercises(selected);
-            }}
+              >
+                <option value="" disabled>
+                  Select Exercise
+                </option>
+                {exercisesLst.map((exercise) => (
+                  <option key={exercise.id} value={exercise.desc}>
+                    {exercise.desc}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="number"
+                placeholder="Repetitions"
+                value={detail.repetitions}
+                onChange={(e) =>
+                  handleExerciseDetailChange(index, "repetitions", e.target.value)
+                }
+              />
+              <input
+                type="number"
+                placeholder="Weight (kg)"
+                value={detail.weight}
+                onChange={(e) =>
+                  handleExerciseDetailChange(index, "weight", e.target.value)
+                }
+              />
+            </div>
+          ))}
+
+          {/* Add another exercise */}
+          <button
+            type="button"
+            onClick={handleAddExercise}
+            className="add-exercise-btn"
           >
-            {exercisesLst.map((exercise) => (
-              <option key={exercise.id} value={exercise.desc}>
-                {exercise.desc}
-              </option>
-            ))}
-          </select>
+            + Add Exercise
+          </button>
+
+          {/* Submit button */}
           <button type="submit" className="submit-btn">
-            Submit
+            Submit Workout
           </button>
         </form>
       )}

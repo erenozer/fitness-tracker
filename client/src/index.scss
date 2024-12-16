@@ -21,15 +21,32 @@ body {
   padding: 0;
 }
 
+.add-workout_container {
+  padding: 20px;
+}
+
+.exercise-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+select, input {
+  padding: 5px;
+  font-size: 1em;
+}
+
+.add-exercise-btn {
+  margin: 10px 0;
+  background-color: #ffc107;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+}
+
 .submit-btn {
-  width: 100%;
-  height: 1.7rem;
-  font-size: 0.8rem;
-  color: white;
-  background-color: #ffcc00;
+  background-color: #ffc107;
+  padding: 10px;
   border: none;
   cursor: pointer;
-  &:hover {
-    background-color: #ddaa00;
-  }
 }

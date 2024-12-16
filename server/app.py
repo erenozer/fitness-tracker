@@ -54,13 +54,46 @@ def get_exercises_lst():
 
 
 @app.route("/add_workout", methods=["POST"])
+@app.route("/add_workout", methods=["POST"])
 def add_workout():
-    """
-    ! Potentially user_id
-    ["name"]: Username
-    ["workout"]: Array of exercises (id's)
-    """
-    pass
+    try:
+        data = request.json
+        day = data.get("day")
+        exercises = data.get("exercises")
+
+        if not day or not exercises:
+            return jsonify({"message": "Day and exercises are required"}), 400
+
+        # Add the workout for the specific day
+        workout_id = Workouts.add_workout_for_day(day)
+
+        # Add exercises with repetitions and weights to the workout
+        for exercise in exercises:
+            exercise_id = Exercises.get_exercise_id_by_name(exercise["exercise"])
+            if not exercise_id:
+                return jsonify({"message": f"Exercise {exercise['exercise']} not found"}), 404
+
+            Workouts.add_exercise_to_workout(
+                workout_id=workout_id,
+                exercise_id=exercise_id,
+                repetitions=exercise["repetitions"],
+                weight=exercise["weight"],
+            )
+
+        return jsonify({"message": "Workout added successfully"}), 201
+    except Exception as e:
+        print(f"Error adding workout: {e}")
+        return jsonify({"message": "Error adding workout"}), 500
+
+def get_workouts_by_day(day):
+    try:
+        workouts = Workouts.get_workouts_for_day(day)
+        if not workouts:
+            return jsonify({"message": "No workouts found for the specified day"}), 404
+        return jsonify({"workouts": workouts}), 200
+    except Exception as e:
+        print(f"Error fetching workouts: {e}")
+        return jsonify({"message": "Error fetching workouts"}), 500
 
 @app.route("/get_workouts", methods=["POST"])
 def get_workouts():
