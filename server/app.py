@@ -32,16 +32,16 @@ def register_usr():
 @app.route("/validate_usr", methods=["POST"])
 def validate_usr():
     if request.content_type != "application/json":
-        return jsonify({"message": "Unsupported Media Type"}), 415
+        return jsonify({"message": "Content-Type must be application/json"}), 400
     try:
         data = request.get_json()
         username = data.get("username")
         password = data.get("password")
-        msg, response = Users.validate_usr(username, password)
+        msg, response, user_id = Users.validate_usr(username, password)
         if response is False:
-            return jsonify({"message": msg}), 400
+            return jsonify({"message": msg}), 401
         else:
-            return jsonify({"message": msg}), 200
+            return jsonify({"message": msg, "user_id": user_id}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
 
@@ -99,10 +99,18 @@ def add_workout():
 
 @app.route("/get_workouts", methods=["POST"])
 def get_workouts():
-    # user_id
-    data = request.get_json()
-    usr_id = data.get("user_id")
-    # Workotus.get_workouts(user_id)
+    try:
+        data = request.get_json()
+        usr_id = data.get("user_id")
+        
+        if not usr_id:
+            return jsonify({"message": "User ID is required"}), 400
+            
+        workouts = Workouts.get_workouts(usr_id)
+        return jsonify({"workouts": workouts}), 200
+    except Exception as e:
+        print(f"Error getting workouts: {e}")
+        return jsonify({"message": "Error retrieving workouts"}), 500
 
 
 @app.endpoint
@@ -115,4 +123,5 @@ if __name__ == "__main__":
     database.init("data.db")
     Users.connect_to_db()
     Exercises.connect_to_db()
+    Workouts.connect_to_db()
     app.run(port=4040, debug=True)

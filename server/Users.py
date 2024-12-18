@@ -40,16 +40,17 @@ class Users:
                 columns=(
                     "hashed_pw",
                     "salt",
+                    "id",
                 ),
                 filters={"name": name},
             )
         ) == []:
-            return "User does not exist", False
-        orig_hsh, salt = response[0]
+            return "User does not exist", False, None
+        orig_hsh, salt, user_id = response[0]
         print(f"[SERVER] hashed_pw: {orig_hsh}")
         print(f"[SERVER] salt: {salt}")
         if PasswordManager.verify_password(
             stored_pw=orig_hsh, prov_pw=password, salt=salt
         ):
-            return "Validated", True
-        return "Invalid password", False
+            return "Validated", True, user_id
+        return "Invalid password", False, None

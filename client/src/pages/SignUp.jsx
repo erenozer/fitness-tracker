@@ -9,22 +9,31 @@ const SignUp = () => {
   const handleForm = async (username, password) => {
     const API_URL = import.meta.env.VITE_API_URL;
     try {
-      fetch(`${API_URL}/register_usr`, {
+      const response = await fetch(`${API_URL}/register_usr`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username: username, password: password }),
-      }).then((response) => {
-        if (response.status != 200 && response.status != 201) {
-          response.json().then((msg) => {
-            alert(msg.message);
-          });
-        } else {
-          login({ username: username, password: password });
-          navigate("/");
-        }
       });
+
+      const data = await response.json();
+
+      if (response.status !== 200 && response.status !== 201) {
+        alert(data.message);
+      } else {
+        const loginResponse = await fetch(`${API_URL}/validate_usr`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username: username, password: password }),
+        });
+        
+        const loginData = await loginResponse.json();
+        login({ username: username, password: password, id: loginData.user_id });
+        navigate("/");
+      }
     } catch (error) {
       console.error("Error: ", error);
       alert(`Error: ${error.message}`);

@@ -21,6 +21,7 @@ class Exercises:
             turn_to_dict=True,
         )
 
+    @classmethod
     def get_exercise_id_by_name(cls, name):
         return cls.db.retrieve_all(
             cls.tbl,

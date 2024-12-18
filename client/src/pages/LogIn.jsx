@@ -6,27 +6,33 @@ import CredentialsForm from "../components/CredentialsForm";
 const LogIn = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const handleForm = (username, password) => {
+  const handleForm = async (username, password) => {
     const API_URL = import.meta.env.VITE_API_URL;
     try {
-      fetch(`${API_URL}/validate_usr`, {
+      const response = await fetch(`${API_URL}/validate_usr`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username: username, password: password }),
-      }).then((response) => {
-        if (response.status != 200 && response.status != 201) {
-          response.json().then((msg) => {
-            alert(msg.message);
-          });
-        } else {
-          login({ username: username, password: password });
-          navigate("/");
-        }
+        body: JSON.stringify({ username, password }),
       });
+
+      const data = await response.json();
+      console.log("Login response:", data);
+
+      if (response.ok) {
+        const userData = {
+          username,
+          id: data.user_id,
+          isAuthenticated: true
+        };
+        login(userData);
+        navigate("/");
+      } else {
+        alert(data.message);
+      }
     } catch (error) {
-      console.error("Error: ", error);
+      console.error("Login error:", error);
       alert(`Error: ${error.message}`);
     }
   };
