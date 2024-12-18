@@ -1,3 +1,4 @@
+import sqlite3
 import database
 
 
@@ -23,11 +24,8 @@ class Exercises:
 
     @classmethod
     def get_exercise_id_by_name(cls, name):
-        return cls.db.retrieve_all(
-            cls.tbl,
-            columns=(
-                "id",
-            ),
-            where=("desc", name),
-            turn_to_dict=True,
+        return cls.db.filter(
+            table=cls.tbl,
+            columns=("id",),
+            filters={"desc": name},
         )

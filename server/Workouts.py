@@ -15,8 +15,8 @@ class Workouts:
         try:
             return cls.db.add_to_table(
                 table=cls.tbl,
-                columns=["user_id"],  # Fix: Use list instead of string
-                args=(user_id,),      # Fix: Add comma to make it a tuple
+                columns=("user_id",),  # Fixed tuple syntax
+                args=(user_id,),
             )
         except sqlite3.Error as e:
             print(f"Error adding workout for user {user_id}: {e}")
@@ -37,12 +37,11 @@ class Workouts:
     @classmethod
     def get_workouts(cls, user_id: int):
         try:
-            return cls.db.retrieve_filtered(
+            return cls.db.filter(
                 table=cls.tbl,
-                columns=["id", "user_id", "date_created"],
-                where_clause="user_id = ?",
+                columns=("id", "user_id", "date_created",),
+                filters={"user_id": user_id},
                 args=(user_id,),
-                turn_to_dict=True
             )
         except sqlite3.Error as e:
             print(f"Error retrieving workouts for user {user_id}: {e}")
