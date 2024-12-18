@@ -15,7 +15,7 @@ class Workouts:
         try:
             return cls.db.add_to_table(
                 table=cls.tbl,
-                columns=("user_id",),  # Fixed tuple syntax
+                columns=("user_id"),  # Fixed tuple syntax
                 args=(user_id,),
             )
         except sqlite3.Error as e:

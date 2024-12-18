@@ -26,6 +26,6 @@ class Exercises:
     def get_exercise_id_by_name(cls, name):
         return cls.db.filter(
             table=cls.tbl,
-            columns=("id",),
+            columns=("id"),
             filters={"desc": name},
         )
