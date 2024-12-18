@@ -126,4 +126,7 @@ if __name__ == "__main__":
     Users.connect_to_db()
     Exercises.connect_to_db()
     Workouts.connect_to_db()
+    WorkoutsExercises.connect_to_db()
+    ExerciseDetails.connect_to_db()
+    
     app.run(port=4040, debug=True)
