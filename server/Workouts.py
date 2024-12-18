@@ -1,3 +1,4 @@
+from datetime import datetime
 import sqlite3
 import database
 
@@ -13,10 +14,11 @@ class Workouts:
     @classmethod
     def add_workout(cls, user_id: int) -> int:
         try:
+            date_created = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             return cls.db.add_to_table(
                 table=cls.tbl,
-                columns=("user_id"),  # Fixed tuple syntax
-                args=(user_id,),
+                columns=("user_id", "date_created"), 
+                args=(user_id, date_created),
             )
         except sqlite3.Error as e:
             print(f"Error adding workout for user {user_id}: {e}")
@@ -39,7 +41,7 @@ class Workouts:
         try:
             return cls.db.filter(
                 table=cls.tbl,
-                columns=("id", "user_id", "date_created",),
+                columns=("id", "user_id", "date_created"),
                 filters={"user_id": user_id},
                 args=(user_id,),
             )

@@ -61,7 +61,7 @@ def add_workout():
     try:
         data = request.json
         exercises = data.get("exercises")
-        user_id = data.get("user_id")  # Add user_id from request
+        user_id = data.get("user_id")
 
         if not exercises or not user_id:
             return jsonify({"message": "User ID and exercises are required"}), 400
@@ -73,9 +73,12 @@ def add_workout():
 
         # Add exercises with repetitions and weights to the workout
         for exercise in exercises:
-            exercise_id = Exercises.get_exercise_id_by_name(exercise["exercise"])
-            if not exercise_id:
-                return jsonify({"message": f"Exercise {exercise['exercise']} not found"}), 404
+            exercise_name = exercise["exercise"]
+            result = Exercises.get_exercise_id_by_name(exercise_name)
+            if not result or len(result) == 0:
+                return jsonify({"message": f"Exercise {exercise_name} not found"}), 404
+                
+            exercise_id = result[0][0]  # Get the first ID from the result tuple
 
             # Add exercise to workout
             workout_exercise_id = WorkoutsExercises.add_exercise_to_workout(
@@ -83,12 +86,11 @@ def add_workout():
                 exercise_id=exercise_id
             )
 
-            # Add exercise details (reps and weight)
             if workout_exercise_id != -1:
                 ExerciseDetails.add_excercise_detail(
                     workout_exercise_id=workout_exercise_id,
-                    repetitions=exercise["repetitions"],
-                    weight=exercise["weight"]
+                    repetitions=int(exercise["repetitions"]),
+                    weight=int(exercise["weight"])
                 )
 
         return jsonify({"message": "Workout added successfully"}), 201

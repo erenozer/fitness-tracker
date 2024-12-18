@@ -15,7 +15,7 @@ class ExerciseDetails:
         try:
             return cls.db.add_to_table(
                 table=cls.tbl,
-                columns=("workout_exercise_id", "repetitions", "weight",),
+                columns=("workout_exercise_id", "repetitions", "weight"),
                 args=(workout_exercise_id, repetitions, weight),
             )
         except sqlite3.Error as e:
