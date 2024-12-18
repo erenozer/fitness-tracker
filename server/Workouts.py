@@ -27,14 +27,12 @@ class Workouts:
             return -1
 
     @classmethod
-    def retrieve_data(cls):
-        return cls.db.retrieve_all(
-            cls.tbl,
-            columns=(
-                "id",
-                "user_id",
-                "date_created",
-            ),
+    def retrieve_data(cls, user_id: int):
+        """Modified to only return workouts for a specific user"""
+        return cls.db.filter(
+            table=cls.tbl,
+            columns=("id", "user_id", "date_created"),
+            filters={"user_id": user_id},
             turn_to_dict=True,
         )
 
@@ -45,7 +43,6 @@ class Workouts:
                 table=cls.tbl,
                 columns=("id", "user_id", "date_created"),
                 filters={"user_id": user_id},
-                args=(user_id,),
             )
         except sqlite3.Error as e:
             print(f"Error retrieving workouts for user {user_id}: {e}")

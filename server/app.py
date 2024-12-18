@@ -48,9 +48,10 @@ def validate_usr():
 
 @app.route("/get_exercises_lst", methods=["GET"])
 def get_exercises_lst():
-    # No arguments.
     try:
-        exercises = Exercises.retrieve_data()
+        data = request.get_json()
+        user_id = data.get("user_id")
+        exercises = Exercises.retrieve_data(user_id)
         return jsonify({"exercises": exercises})
     except Exception as e:
         return jsonify({"message": str(e)}), 500
@@ -113,6 +114,51 @@ def get_workouts():
     except Exception as e:
         print(f"Error getting workouts: {e}")
         return jsonify({"message": "Error retrieving workouts"}), 500
+
+
+@app.route("/get_workout_details", methods=["POST"])
+def get_workout_details():
+    try:
+        data = request.get_json()
+        user_id = data.get("user_id")
+        
+        if not user_id:
+            return jsonify({"message": "User ID is required"}), 400
+            
+        # Get workouts for the user
+        workouts_data = Workouts.get_workouts(user_id)
+        if not workouts_data:
+            return jsonify({'workouts': {}}), 200
+
+        workouts = {}
+        for workout in workouts_data:
+            workout_id = workout[0]
+            workout_exercises = WorkoutsExercises.get_by_workout_id(workout_id)
+            
+            exercises_list = []
+            for we in workout_exercises:
+                exercise_id = we[2]
+                we_id = we[0]
+                
+                exercise_details = ExerciseDetails.get_by_workout_exercise_id(we_id)
+                if exercise_details:
+                    exercise_info = Exercises.get_exercise_by_id(exercise_id)
+                    if exercise_info:
+                        exercises_list.append({
+                            'name': exercise_info[0][1],
+                            'repetitions': exercise_details[0][1],
+                            'weight': exercise_details[0][2]
+                        })
+            
+            workouts[workout_id] = {
+                'date': workout[2],
+                'exercises': exercises_list
+            }
+        
+        return jsonify({'workouts': workouts}), 200
+    except Exception as e:
+        print(f"Error getting workout details: {e}")
+        return jsonify({"message": "Error retrieving workout details"}), 500
 
 
 @app.endpoint

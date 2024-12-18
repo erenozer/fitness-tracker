@@ -11,14 +11,11 @@ class Exercises:
         cls.db = database.get_db()
 
     @classmethod
-    def retrieve_data(cls):
-        return cls.db.retrieve_all(
-            cls.tbl,
-            columns=(
-                "id",
-                "desc",
-                "body_part",
-            ),
+    def retrieve_data(cls, user_id: int):
+        return cls.db.filter(
+            table=cls.tbl,
+            columns=("id", "desc", "body_part"),
+            filters={"user_id": user_id},
             turn_to_dict=True,
         )
 
@@ -29,3 +26,15 @@ class Exercises:
             columns=("id", "desc"),  # Include both id and description
             filters={"desc": name},
         )
+
+    @classmethod
+    def get_exercise_by_id(cls, exercise_id: int):
+        try:
+            return cls.db.filter(
+                table=cls.tbl,
+                columns=("id", "desc", "body_part"),
+                filters={"id": exercise_id},
+            )
+        except sqlite3.Error as e:
+            print(f"Error retrieving exercise with id {exercise_id}: {e}")
+            return []

@@ -113,6 +113,37 @@ class __DataBase:
             print(e)
             return []
 
+    def execute_custom_query(
+        self,
+        query: str,
+        args: tuple = (),
+        turn_to_dict: bool = False,
+        singlethread=SQLITE3_SINGLETHREAD,
+    ):
+        if singlethread:
+            if self.conn_established:
+                self.end_conn()
+            self.start_conn()
+        try:
+            print(f"[SQL] {query}")
+            cursor = self.cursor.execute(query, args)
+            data = cursor.fetchall()
+            
+            if turn_to_dict and data:
+                columns = [description[0] for description in cursor.description]
+                result = []
+                for row in data:
+                    result.append(dict(zip(columns, row)))
+                data = result
+                
+            print(f"[SQL] {data}")
+            if singlethread:
+                self.end_conn()
+            return data
+        except sqlite3.Error as e:
+            print(f"[SQL] ERROR: {e}")
+            return []
+
     def close(self):
         self.conn.close()
 

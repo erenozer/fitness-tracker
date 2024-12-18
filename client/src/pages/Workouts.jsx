@@ -6,7 +6,8 @@ const Workouts = () => {
   const [showAddWorkoutForm, setShowAddWorkoutForm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+  const [workoutHistory, setWorkoutHistory] = useState({});
+
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -28,6 +29,32 @@ const Workouts = () => {
 
     fetchExercises();
   }, []);
+
+  useEffect(() => {
+    const fetchWorkoutHistory = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${API_URL}/get_workout_details`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: parseInt(userId) })
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
+          setWorkoutHistory(data.workouts);
+        } else {
+          setError(data.message);
+        }
+      } catch (err) {
+        setError("Failed to fetch workout history");
+      }
+    };
+
+    if (userId) {
+      fetchWorkoutHistory();
+    }
+  }, [userId, showAddWorkoutForm]);
 
   const toggleAddWorkoutForm = () => {
     setShowAddWorkoutForm(!showAddWorkoutForm);
@@ -112,7 +139,7 @@ const Workouts = () => {
         {showAddWorkoutForm ? "Cancel" : "Add Workout"}
       </button>
 
-      {showAddWorkoutForm && (
+      {showAddWorkoutForm ? (
         <form onSubmit={handleAddWorkoutForm}>
           {workoutDetails.map((detail, index) => (
             <div key={index} className="exercise-row">
@@ -167,6 +194,25 @@ const Workouts = () => {
             {isLoading ? "Adding..." : "Submit Workout"}
           </button>
         </form>
+      ) : (
+        <div className="workout-history">
+          <h2>Workout History</h2>
+          {Object.entries(workoutHistory).map(([workoutId, workout]) => (
+            <div key={workoutId} className="workout-card">
+              <h3>Workout on {new Date(workout.date).toLocaleDateString()}</h3>
+              <div className="exercises-list">
+                {workout.exercises.map((exercise, index) => (
+                  <div key={index} className="exercise-item">
+                    <span className="exercise-name">{exercise.name}</span>
+                    <span className="exercise-details">
+                      {exercise.repetitions} reps @ {exercise.weight}kg
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
