@@ -48,10 +48,9 @@ def validate_usr():
 
 @app.route("/get_exercises_lst", methods=["GET"])
 def get_exercises_lst():
+    # 
     try:
-        data = request.get_json()
-        user_id = data.get("user_id")
-        exercises = Exercises.retrieve_data(user_id)
+        exercises = Exercises.retrieve_data()
         return jsonify({"exercises": exercises})
     except Exception as e:
         return jsonify({"message": str(e)}), 500

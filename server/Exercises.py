@@ -11,13 +11,17 @@ class Exercises:
         cls.db = database.get_db()
 
     @classmethod
-    def retrieve_data(cls, user_id: int):
-        return cls.db.filter(
-            table=cls.tbl,
-            columns=("id", "desc", "body_part"),
-            filters={"user_id": user_id},
+    def retrieve_data(cls):
+        return cls.db.retrieve_all(
+            cls.tbl,
+            columns=(
+                "id",
+                "desc",
+                "body_part",
+            ),
             turn_to_dict=True,
         )
+
 
     @classmethod
     def get_exercise_id_by_name(cls, name):
