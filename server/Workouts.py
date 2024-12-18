@@ -15,11 +15,13 @@ class Workouts:
     def add_workout(cls, user_id: int) -> int:
         try:
             date_created = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            return cls.db.add_to_table(
+            workout_id = cls.db.add_to_table(
                 table=cls.tbl,
                 columns=("user_id", "date_created"), 
                 args=(user_id, date_created),
             )
+            print(f"Created workout with id: {workout_id}")  # Debug log
+            return workout_id
         except sqlite3.Error as e:
             print(f"Error adding workout for user {user_id}: {e}")
             return -1

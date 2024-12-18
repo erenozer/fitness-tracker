@@ -43,13 +43,16 @@ class __DataBase:
             sql = f"INSERT INTO {table} {columns} VALUES ({', '.join('?' * len(args))})"
             print(f"[SQL] {sql}")
             self.cursor.execute(sql, args)
+            last_id = self.cursor.lastrowid  # Get the last inserted row id
             self.conn.commit()
             if singlethread:
                 self.end_conn()
             print("[SQL] SUCCESS")
+            return last_id  # Return the id
         except sqlite3.Error as e:
             print("[SQL] ERROR")
             print(e)
+            return -1  # Return -1 on error
 
     def filter(
         self,
