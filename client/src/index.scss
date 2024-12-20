@@ -23,6 +23,8 @@ body {
 
 .add-workout_container {
   padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .exercise-row {
@@ -36,19 +38,30 @@ select, input {
   font-size: 1em;
 }
 
-.add-exercise-btn {
-  margin: 10px 0;
+.add-exercise-btn, .submit-btn {
+  margin: 15px 0;
   background-color: #ffc107;
   border: none;
-  padding: 8px;
+  padding: 12px 20px;
   cursor: pointer;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #ffb300;
+  }
+  
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
 }
 
 .submit-btn {
-  background-color: #ffc107;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
+  margin-top: 25px;
+  display: block;
+  min-width: 150px;
 }
 
 .workout-history {
@@ -88,3 +101,136 @@ select, input {
 .exercise-details {
   color: #666;
 }
+
+.exercise-actions {
+  display: flex;
+  gap: 10px;
+  
+  button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    
+    &:first-child {  // Edit button
+      background-color: #007bff;
+      color: white;
+      
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+    
+    &:last-child {  // Delete button
+      background-color: #dc3545;
+      color: white;
+      
+      &:hover {
+        background-color: #c82333;
+      }
+    }
+  }
+}
+
+.exercise-edit-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  
+  input {
+    width: 80px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    
+    &:first-of-type {  // Save button
+      background-color: #28a745;
+      color: white;
+      
+      &:hover {
+        background-color: #218838;
+      }
+    }
+    
+    &:last-of-type {  // Cancel button
+      background-color: #6c757d;
+      color: white;
+      
+      &:hover {
+        background-color: #5a6268;
+      }
+    }
+  }
+}
+
+.exercise-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.exercise-item:last-child {
+  border-bottom: none;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.add-exercise-btn, .remove-exercise-btn, .submit-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.add-exercise-btn {
+  background-color: #ffc107;
+  &:hover {
+    background-color: #ffb300;
+    transform: scale(1.05); // Slight hover effect
+  }
+}
+
+.remove-exercise-btn {
+  background-color: #dc3545;
+  color: white;
+  &:hover {
+    background-color: #c82333;
+    transform: scale(1.05); // Slight hover effect
+  }
+}
+
+.submit-btn {
+  margin-top: 25px;
+  background-color: #ffc107;
+  &:hover {
+    background-color: #ffb300;
+    transform: scale(1.05); // Slight hover effect
+  }
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+

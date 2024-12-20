@@ -50,3 +50,12 @@ class WorkoutsExercises:
         except sqlite3.Error as e:
             print(f"Error retrieving exercises for workout {workout_id}: {e}")
             return []
+    @classmethod    
+    def delete_workout_exercise(cls, workout_exercise_id: int) -> bool:
+        try:
+            query = "DELETE FROM workouts_exercises WHERE id = ?"
+            cls.db.execute_custom_query(query, (workout_exercise_id,))
+            return True
+        except sqlite3.Error as e:
+            print(f"Error deleting workout exercise with id {workout_exercise_id}: {e}")
+            return False

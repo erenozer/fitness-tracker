@@ -50,3 +50,27 @@ class ExerciseDetails:
         except sqlite3.Error as e:
             print(f"Error retrieving exercise details for workout_exercise_id {workout_exercise_id}: {e}")
             return []
+
+    @classmethod
+    def update_exercise_detail(cls, workout_exercise_id: int, repetitions: int, weight: int) -> bool:
+        try:
+            query = """
+                UPDATE exercise_details
+                SET repetitions = ?, weight = ?
+                WHERE workout_exercise_id = ?
+            """
+            cls.db.execute_custom_query(query, (repetitions, weight, workout_exercise_id))
+            return True
+        except sqlite3.Error as e:
+            print(f"Error updating exercise details for workout_exercise_id {workout_exercise_id}: {e}")
+            return False
+
+    @classmethod
+    def delete_exercise_detail(cls, workout_exercise_id: int) -> bool:
+        try:
+            query = "DELETE FROM exercise_details WHERE workout_exercise_id = ?"
+            cls.db.execute_custom_query(query, (workout_exercise_id,))
+            return True
+        except sqlite3.Error as e:
+            print(f"Error deleting exercise details for workout_exercise_id {workout_exercise_id}: {e}")
+            return False

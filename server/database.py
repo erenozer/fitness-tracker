@@ -127,6 +127,9 @@ class __DataBase:
         try:
             print(f"[SQL] {query}")
             cursor = self.cursor.execute(query, args)
+            if query.strip().upper().startswith(('UPDATE', 'DELETE', 'INSERT')):
+                self.conn.commit()  # Add commit for modifications
+                return True
             data = cursor.fetchall()
             
             if turn_to_dict and data:
@@ -142,6 +145,8 @@ class __DataBase:
             return data
         except sqlite3.Error as e:
             print(f"[SQL] ERROR: {e}")
+            if query.strip().upper().startswith(('UPDATE', 'DELETE', 'INSERT')):
+                return False
             return []
 
     def close(self):

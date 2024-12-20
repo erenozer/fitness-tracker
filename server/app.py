@@ -114,7 +114,6 @@ def get_workout_details():
         if not user_id:
             return jsonify({"message": "User ID is required"}), 400
             
-        # Get workouts for the user
         workouts_data = Workouts.get_workouts(user_id)
         if not workouts_data:
             return jsonify({'workouts': {}}), 200
@@ -127,13 +126,14 @@ def get_workout_details():
             exercises_list = []
             for we in workout_exercises:
                 exercise_id = we[2]
-                we_id = we[0]
+                we_id = we[0]  # This is the workout_exercise_id
                 
                 exercise_details = ExerciseDetails.get_by_workout_exercise_id(we_id)
                 if exercise_details:
                     exercise_info = Exercises.get_exercise_by_id(exercise_id)
                     if exercise_info:
                         exercises_list.append({
+                            'id': we_id,  # Include the workout_exercise_id
                             'name': exercise_info[0][1],
                             'repetitions': exercise_details[0][1],
                             'weight': exercise_details[0][2]
@@ -157,6 +157,72 @@ def get_exercises_lst():
         return jsonify({"exercises": exercises})
     except Exception as e:
         return jsonify({"message": str(e)}), 500
+
+
+@app.route("/update_exercise_detail", methods=["POST"])
+def update_exercise_detail():
+    try:
+        data = request.get_json()
+        workout_exercise_id = data.get("workout_exercise_id")
+        repetitions = data.get("repetitions")
+        weight = data.get("weight")
+
+        if not all([workout_exercise_id, repetitions, weight]):
+            return jsonify({"message": "Missing required fields"}), 400
+
+        # Validate the parameters are integers
+        try:
+            workout_exercise_id = int(workout_exercise_id)
+            repetitions = int(repetitions)
+            weight = int(weight)
+        except (TypeError, ValueError):
+            return jsonify({"message": "Invalid parameter types"}), 400
+
+        success = ExerciseDetails.update_exercise_detail(
+            workout_exercise_id=workout_exercise_id,
+            repetitions=repetitions,
+            weight=weight
+        )
+
+        if success:
+            return jsonify({"message": "Exercise detail updated successfully"}), 200
+        else:
+            return jsonify({"message": "Failed to update exercise detail"}), 500
+
+    except Exception as e:
+        print(f"Error updating exercise detail: {e}")
+        return jsonify({"message": f"Error updating exercise detail: {str(e)}"}), 500
+
+@app.route("/delete_exercise", methods=["POST"])
+def delete_exercise():
+    try:
+        data = request.get_json()
+        workout_exercise_id = data.get("workout_exercise_id")
+
+        if workout_exercise_id is None:
+            return jsonify({"message": "Workout exercise ID is required"}), 400
+
+        # Validate workout_exercise_id is an integer
+        try:
+            workout_exercise_id = int(workout_exercise_id)
+        except (TypeError, ValueError):
+            return jsonify({"message": "Invalid workout exercise ID"}), 400
+
+        # Delete exercise details first (due to foreign key constraints)
+        details_deleted = ExerciseDetails.delete_exercise_detail(workout_exercise_id)
+        if not details_deleted:
+            return jsonify({"message": "Failed to delete exercise details"}), 500
+
+        # Then delete the workout exercise entry
+        exercise_deleted = WorkoutsExercises.delete_workout_exercise(workout_exercise_id)
+        if not exercise_deleted:
+            return jsonify({"message": "Failed to delete workout exercise"}), 500
+
+        return jsonify({"message": "Exercise deleted successfully"}), 200
+
+    except Exception as e:
+        print(f"Error deleting exercise: {e}")
+        return jsonify({"message": f"Error deleting exercise: {str(e)}"}), 500
 
 
 @app.endpoint

@@ -37,7 +37,7 @@ const SignUp = () => {
           isAuthenticated: true
         };
         login(userData);
-        localStorage.setItem('userId', loginData.user_id); // Add this line
+        localStorage.setItem('userId', loginData.user_id);
         navigate("/");
       }
     } catch (error) {

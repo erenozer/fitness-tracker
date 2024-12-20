@@ -27,7 +27,7 @@ class Exercises:
     def get_exercise_id_by_name(cls, name):
         return cls.db.filter(
             table=cls.tbl,
-            columns=("id", "desc"),  # Include both id and description
+            columns=("id", "desc"),
             filters={"desc": name},
         )
 
