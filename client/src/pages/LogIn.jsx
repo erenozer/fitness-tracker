@@ -27,6 +27,7 @@ const LogIn = () => {
           isAuthenticated: true
         };
         login(userData);
+        localStorage.setItem('userId', data.user_id); // Add this line
         navigate("/");
       } else {
         alert(data.message);

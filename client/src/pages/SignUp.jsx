@@ -31,7 +31,13 @@ const SignUp = () => {
         });
         
         const loginData = await loginResponse.json();
-        login({ username: username, password: password, id: loginData.user_id });
+        const userData = {
+          username: username,
+          id: loginData.user_id,
+          isAuthenticated: true
+        };
+        login(userData);
+        localStorage.setItem('userId', loginData.user_id); // Add this line
         navigate("/");
       }
     } catch (error) {

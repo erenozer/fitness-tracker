@@ -29,15 +29,15 @@ const Navbar = ({ isLoggedIn }) => {
         <div className="nav-group">
           {isLoggedIn ? (
             <li>
-              <Link to="/logout">LogOut</Link>
+              <Link to="/logout">Log Out</Link>
             </li>
           ) : (
             <React.Fragment>
               <li>
-                <Link to="/login">LogIn</Link>
+                <Link to="/login">Log In</Link>
               </li>
               <li>
-                <Link to="/signup">SignUp</Link>
+                <Link to="/signup">Sign Up</Link>
               </li>
             </React.Fragment>
           )}

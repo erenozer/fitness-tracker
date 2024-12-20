@@ -46,16 +46,6 @@ def validate_usr():
         return jsonify({"message": str(e)}), 500
 
 
-@app.route("/get_exercises_lst", methods=["GET"])
-def get_exercises_lst():
-    # 
-    try:
-        exercises = Exercises.retrieve_data()
-        return jsonify({"exercises": exercises})
-    except Exception as e:
-        return jsonify({"message": str(e)}), 500
-
-
 @app.route("/add_workout", methods=["POST"])
 def add_workout():
     try:
@@ -158,6 +148,15 @@ def get_workout_details():
     except Exception as e:
         print(f"Error getting workout details: {e}")
         return jsonify({"message": "Error retrieving workout details"}), 500
+
+@app.route("/get_exercises_lst", methods=["GET"])
+def get_exercises_lst():
+    # 
+    try:
+        exercises = Exercises.retrieve_data()
+        return jsonify({"exercises": exercises})
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
 
 @app.endpoint
