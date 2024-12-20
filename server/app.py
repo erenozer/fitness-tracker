@@ -225,6 +225,25 @@ def delete_exercise():
         return jsonify({"message": f"Error deleting exercise: {str(e)}"}), 500
 
 
+@app.route("/delete_workout", methods=["POST"])
+def delete_workout():
+    try:
+        data = request.get_json()
+        workout_id = data.get("workout_id")
+        
+        if not workout_id:
+            return jsonify({"message": "Workout ID is required"}), 400
+
+        success = Workouts.delete_workout(workout_id)
+        
+        if success:
+            return jsonify({"message": "Workout deleted successfully"}), 200
+        else:
+            return jsonify({"message": "Failed to delete workout"}), 500
+
+    except Exception as e:
+        return jsonify({"message": f"Error: {str(e)}"}), 500
+
 @app.endpoint
 def close_app():
     database.close()

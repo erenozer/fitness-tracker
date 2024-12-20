@@ -59,6 +59,7 @@ class __DataBase:
         table: str,
         columns: List,
         filters: Dict,
+        order_by: str = None,  # New parameter
         singlethread=SQLITE3_SINGLETHREAD,
     ) -> List:
         if singlethread:
@@ -69,6 +70,8 @@ class __DataBase:
             sql = f"SELECT {', '.join(columns)} from {table} "
             for k, v in filters.items():
                 sql += f"WHERE {k} = '{v}'"
+            if order_by:
+                sql += f" ORDER BY {order_by}"
             print(f"[SQL] {sql}")
             cursor = self.cursor.execute(sql)
             data = cursor.fetchall()
@@ -128,7 +131,7 @@ class __DataBase:
             print(f"[SQL] {query}")
             cursor = self.cursor.execute(query, args)
             if query.strip().upper().startswith(('UPDATE', 'DELETE', 'INSERT')):
-                self.conn.commit()  # Add commit for modifications
+                self.conn.commit() 
                 return True
             data = cursor.fetchall()
             

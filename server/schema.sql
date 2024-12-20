@@ -10,7 +10,7 @@ CREATE TABLE users (
 -- Exercises table
 CREATE TABLE exercises (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    desc VARCHAR(100),  -- description
+    desc VARCHAR(100),
     body_part VARCHAR(20)
 );
 
@@ -22,7 +22,7 @@ CREATE TABLE workouts (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- Workouts_Exercises table (purely links workouts and exercises)
+-- Workouts_Exercises table (links workouts and exercises)
 CREATE TABLE workouts_exercises (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     workout_id INTEGER NOT NULL,
@@ -39,7 +39,9 @@ CREATE TABLE exercise_details (
     FOREIGN KEY (workout_exercise_id) REFERENCES workouts_exercises(id)
 );
 
--- Basic compound exercises that target multiple muscle groups
+-- Insert fixed Exercises
+-- NOTE: These are predefined exercises to use the system AND are required for the system to work
+-- Artificial user data is NOT SUBMITTED in the Schema file as requested in the document.
 INSERT INTO exercises (desc, body_part) VALUES 
     ('Barbell Back Squat', 'Legs'),
     ('Conventional Deadlift', 'Back'),
@@ -47,7 +49,6 @@ INSERT INTO exercises (desc, body_part) VALUES
     ('Standing Overhead Press', 'Shoulders'),
     ('Barbell Row', 'Back');
 
--- Upper body pushing exercises
 INSERT INTO exercises (desc, body_part) VALUES 
     ('Push-up', 'Chest'),
     ('Dips', 'Chest'),
@@ -55,7 +56,6 @@ INSERT INTO exercises (desc, body_part) VALUES
     ('Lateral Raise', 'Shoulders'),
     ('Tricep Extension', 'Arms');
 
--- Upper body pulling exercises
 INSERT INTO exercises (desc, body_part) VALUES 
     ('Pull-up', 'Back'),
     ('Chin-up', 'Back'),
@@ -63,7 +63,6 @@ INSERT INTO exercises (desc, body_part) VALUES
     ('Barbell Curl', 'Arms'),
     ('Hammer Curl', 'Arms');
 
--- Lower body exercises
 INSERT INTO exercises (desc, body_part) VALUES 
     ('Romanian Deadlift', 'Legs'),
     ('Bulgarian Split Squat', 'Legs'),
@@ -71,7 +70,6 @@ INSERT INTO exercises (desc, body_part) VALUES
     ('Hip Thrust', 'Legs'),
     ('Leg Press', 'Legs');
 
--- Core exercises
 INSERT INTO exercises (desc, body_part) VALUES 
     ('Plank', 'Core'),
     ('Cable Woodchop', 'Core'),
@@ -79,7 +77,6 @@ INSERT INTO exercises (desc, body_part) VALUES
     ('Russian Twist', 'Core'),
     ('Dead Bug', 'Core');
 
--- Compound movement variations
 INSERT INTO exercises (desc, body_part) VALUES 
     ('Front Squat', 'Legs'),
     ('Sumo Deadlift', 'Legs'),

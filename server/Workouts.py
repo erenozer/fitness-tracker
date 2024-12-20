@@ -28,12 +28,12 @@ class Workouts:
 
     @classmethod
     def retrieve_data(cls, user_id: int):
-        """Modified to only return workouts for a specific user"""
         return cls.db.filter(
             table=cls.tbl,
             columns=("id", "user_id", "date_created"),
             filters={"user_id": user_id},
             turn_to_dict=True,
+            order_by="date_created DESC"
         )
 
     @classmethod
@@ -43,7 +43,42 @@ class Workouts:
                 table=cls.tbl,
                 columns=("id", "user_id", "date_created"),
                 filters={"user_id": user_id},
+                order_by="date_created DESC"
             )
         except sqlite3.Error as e:
             print(f"Error retrieving workouts for user {user_id}: {e}")
             return []
+        
+    @classmethod
+    def delete_workout(cls, workout_id: int) -> bool:
+        try:
+            # First, delete all exercise details for this workout
+            query1 = """
+                DELETE FROM exercise_details 
+                WHERE workout_exercise_id IN (
+                    SELECT id FROM workouts_exercises 
+                    WHERE workout_id = ?
+                )
+            """
+            
+            # Then delete all workout-exercise associations
+            query2 = """
+                DELETE FROM workouts_exercises 
+                WHERE workout_id = ?
+            """
+            
+            # Finally delete the workout itself
+            query3 = """
+                DELETE FROM workouts 
+                WHERE id = ?
+            """
+            
+            # Execute queries in order
+            cls.db.execute_custom_query(query1, (workout_id,))
+            cls.db.execute_custom_query(query2, (workout_id,))
+            cls.db.execute_custom_query(query3, (workout_id,))
+            
+            return True
+        except sqlite3.Error as e:
+            print(f"Error deleting workout {workout_id}: {e}")
+            return False

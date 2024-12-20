@@ -2,7 +2,6 @@
 
 $main-brand-color: #000000;
 
-
 :root {
   font-family: Impact, Arial;
   font-size: 20px;
@@ -29,8 +28,20 @@ body {
 
 .exercise-row {
   display: flex;
-  gap: 10px;
+  gap: 20px; /* Increase gap for more spacing between elements */
+  margin-top: 25px;
   margin-bottom: 10px;
+  justify-content: center; /* Center the row horizontally */
+  align-items: center; /* Align items vertically */
+  flex-wrap: wrap; // Add this to allow wrapping
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%; // Take full width
+  margin-top: 10px;
 }
 
 select, input {
@@ -38,30 +49,44 @@ select, input {
   font-size: 1em;
 }
 
-.add-exercise-btn, .submit-btn {
-  margin: 15px 0;
+.add-exercise-btn, .submit-btn, .remove-exercise-btn{
+  margin: 20px;
   background-color: #ffc107;
   border: none;
-  padding: 12px 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
   cursor: pointer;
   border-radius: 4px;
   font-weight: 500;
-  transition: background-color 0.2s;
-  
+  align-items: center;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.add-exercise-btn {
+  background-color: #ffc107;
   &:hover {
     background-color: #ffb300;
+    transform: scale(1.05);
   }
-  
-  &:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
+}
+
+.remove-exercise-btn {
+  background-color: #dc3545;
+
+  &:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
   }
 }
 
 .submit-btn {
-  margin-top: 25px;
+  margin: 25px auto 0;
   display: block;
   min-width: 150px;
+  &:hover {
+    background-color: #ffb300;
+    transform: scale(1.05);
+  }
 }
 
 .workout-history {
@@ -89,9 +114,15 @@ select, input {
 .exercise-item {
   display: flex;
   justify-content: space-between;
+  align-items: center; /* Ensure vertical alignment */
   padding: 8px;
   background: white;
   border-radius: 4px;
+  border-bottom: 1px solid #eee;
+}
+
+.exercise-item:last-child {
+  border-bottom: none;
 }
 
 .exercise-name {
@@ -105,32 +136,31 @@ select, input {
 .exercise-actions {
   display: flex;
   gap: 10px;
-  
-  button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
-    
-    &:first-child {  // Edit button
-      background-color: #007bff;
-      color: white;
-      
-      &:hover {
-        background-color: #0056b3;
-      }
-    }
-    
-    &:last-child {  // Delete button
-      background-color: #dc3545;
-      color: white;
-      
-      &:hover {
-        background-color: #c82333;
-      }
-    }
+  justify-content: center;  // Added this line
+}
+
+.exercise-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.exercise-actions button:first-child {
+  background-color: #007bff;
+  color: white;
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.exercise-actions button:last-child {
+  background-color: #dc3545;
+  color: white;
+  &:hover {
+    background-color: #c82333;
   }
 }
 
@@ -139,93 +169,37 @@ select, input {
   gap: 10px;
   align-items: center;
   width: 100%;
-  
-  input {
-    width: 80px;
-    padding: 6px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
-    
-    &:first-of-type {  // Save button
-      background-color: #28a745;
-      color: white;
-      
-      &:hover {
-        background-color: #218838;
-      }
-    }
-    
-    &:last-of-type {  // Cancel button
-      background-color: #6c757d;
-      color: white;
-      
-      &:hover {
-        background-color: #5a6268;
-      }
-    }
-  }
 }
 
-.exercise-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid #eee;
-}
-
-.exercise-item:last-child {
-  border-bottom: none;
-}
-
-.form-buttons {
-  display: flex;
-  gap: 10px;
-  margin: 15px 0;
-}
-
-.add-exercise-btn, .remove-exercise-btn, .submit-btn {
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: 500;
+.exercise-edit-form input {
+  width: 80px;
+  padding: 6px;
+  border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+.exercise-edit-form button {
+  padding: 6px 12px;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
+  font-weight: 500;
+  transition: background-color 0.2s;
 }
 
-.add-exercise-btn {
-  background-color: #ffc107;
-  &:hover {
-    background-color: #ffb300;
-    transform: scale(1.05); // Slight hover effect
-  }
-}
-
-.remove-exercise-btn {
-  background-color: #dc3545;
+.exercise-edit-form button:first-of-type {
+  background-color: #28a745;
   color: white;
   &:hover {
-    background-color: #c82333;
-    transform: scale(1.05); // Slight hover effect
+    background-color: #218838;
   }
 }
 
-.submit-btn {
-  margin-top: 25px;
-  background-color: #ffc107;
+.exercise-edit-form button:last-of-type {
+  background-color: #6c757d;
+  color: white;
   &:hover {
-    background-color: #ffb300;
-    transform: scale(1.05); // Slight hover effect
+    background-color: #5a6268;
   }
 }
 
@@ -234,3 +208,68 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  justify-content: center; 
+  align-items: center; 
+}
+
+
+.workout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.delete-workout-btn {
+  background-color: #545050;
+  color: white;
+  margin-right: 10px;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-workout-btn:hover {
+  background-color: #cc0000;
+}
+
+.exercise-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.exercise-column {
+  padding: 0 15px;
+}
+
+.exercise-name {
+  flex: 2;
+  min-width: 200px;
+}
+
+.exercise-details {
+  flex: 1;
+  min-width: 150px;
+  text-align: center;
+}
+
+.exercise-actions {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.exercise-edit-form {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+}
