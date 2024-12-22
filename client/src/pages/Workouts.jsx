@@ -160,7 +160,7 @@ const Workouts = () => {
 
       if (response.ok) {
         setEditingExercise(null);
-        await fetchWorkoutHistory(); // Use await here
+        await fetchWorkoutHistory();
       } else {
         const data = await response.json();
         setError(data.message || "Failed to update exercise");
@@ -184,7 +184,7 @@ const Workouts = () => {
       });
 
       if (response.ok) {
-        await fetchWorkoutHistory(); // Use await here
+        await fetchWorkoutHistory();
       } else {
         const data = await response.json();
         setError(data.message || "Failed to delete exercise");

@@ -20,7 +20,7 @@ class Workouts:
                 columns=("user_id", "date_created"), 
                 args=(user_id, date_created),
             )
-            print(f"Created workout with id: {workout_id}")  # Debug log
+            print(f"Created workout with id: {workout_id}")
             return workout_id
         except sqlite3.Error as e:
             print(f"Error adding workout for user {user_id}: {e}")

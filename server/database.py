@@ -59,7 +59,7 @@ class __DataBase:
         table: str,
         columns: List,
         filters: Dict,
-        order_by: str = None,  # New parameter
+        order_by: str = None,
         singlethread=SQLITE3_SINGLETHREAD,
     ) -> List:
         if singlethread:

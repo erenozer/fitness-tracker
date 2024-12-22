@@ -25,7 +25,6 @@ class WorkoutsExercises:
         
     @classmethod
     def retrieve_data(cls, user_id: int):
-        """Modified to only return workout exercises for a user's workouts"""
         query = """
             SELECT we.id, we.workout_id, we.exercise_id
             FROM workouts_exercises we
